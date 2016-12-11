@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>List page</title>
+     {% load staticfiles %}
+    <link href="{% static 'semantic/semantic.min.css'%}" rel="stylesheet" type="text/css">
+    <script src="{% static 'semantic/semantic.min.js'%}"></script>
+</head>
+<body>
+
+
+<div class="ui raised  text container segment">
+  <h2 class="ui header center aligned "> Full list page</h2>
+</div>
+<br>
+
+<div class="container">
+
+<form action={{ request.get_full_path }}>{% csrf_token %}>
+    <div class="ui container segment">
+        <div class="ui one column centered very padded grid">
+            <div class="ui form ">
+                <div class="row">
+                    <div class="ui fields">
+                        <div class="field">
+                            <label>Buyer</label>
+                            <select  class="ui dropdown" name="idBuyer">
+                                {% for buyer in buyers %}
+                              <option value="{{buyer.idBuyer}}">{{buyer.nameBuyer}} {{buyer.surnameBuyer}}</option>
+                                {% endfor %}
+                            </select>
+                          </div>
+                    </div>
+                    <button type="submit" class="ui yellow button">Search</button>
+                    {% if msgs %}
+                    <div>
+                        <br> Found: <b>{{ total }}</b> records<br>
+                        <br><strong>Searched</strong> <b>{{ status }}</b>
+                        <br> Search time: {{ msgs }} sec
+                    </div>
+                    {% else %}
+                        <div>
+                            <br> Found : <b>{{ total }} </b>records</b>
+                        </div>
+                    {% endif %}
+                    <br>
+                </div>
+            </div>
+        </div>
+        <br>
+
+
+<table class="ui celled striped padded table">
+  <thead>
+    <tr>
+        <th></th>
+        <th>Owner</th>
+        <th>Customer is older than 18</th>
+        <th>Book title</th>
+        <th>Author</th>
+        <th>Publisher</th>
+        <th>Journal title</th>
+        <th>Publisher producer</th>
+        <th>Price</th>
+        <th>Sale date</th>
+    {% if list != None%}
+        <th>Edit</th>
+        <th>Delete</th>
+    </tr>
+  </thead>
+  <tbody>
+        {% for ss in list %}
+        <tr>
+            <th>{{ss.idPurchase}}</th>
+            <th>{{ss.buyer.nameBuyer}} {{" "}} {{ss.buyer.surnameBuyer}}</th>
+            <th>{{ss.buyer.age}}</th>
+            <th>{{ss.book.titleBook}}</th>
+            <th>{{ss.book.author}}</th>
+            <th>{{ss.book.publisherBook}}</th>
+            <th>{{ss.journal.titleJournal}}</th>
+            <th>{{ss.journal.publisher}}</th>
+            <th>{{ss.price}}</th>
+            <th>{{ss.buyDate}}</th>
+            <th><a href="/{{ss.idPurchase}}"> <button class="ui blue button">Edit</button> </a></th>
+            <th><a href="/remove/{{ss.idPurchase}}"> <button class="ui red button">Delete</button> </a></th>
+        </tr>
+        {% endfor %}
+        <div class="pagination">
+            <span class="step-links">
+                {% if list.has_previous %}
+                    <a href="?page={{ contacts.previous_page_number }}">previous</a>
+                {% endif %}
+            <span class="current">
+                Page {{ list.number }} of {{ list.paginator.num_pages }}.
+            </span>
+            {% if list.has_next %}
+                <a href="?page={{ list.next_page_number }}">next</a>
+            {% endif %}
+            </span>
+        </div>
+    {% endif %}
+  </tbody>
+
+</table>
+<br>
+</body>
+</html>
